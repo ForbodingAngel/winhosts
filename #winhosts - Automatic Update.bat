@@ -8,9 +8,9 @@ if not exist "%appdata%\#winhosts\HOSTS" (
 )
 
 cls
-
-ECHO Updating to the latest hosts file from: https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts
-wget -O "%appdata%\#winhosts\hosts.txt" https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts --no-check-certificate
+set /p URL=<HOSTS.#url
+ECHO Updating to the latest hosts file from: %URL%
+wget -O "%appdata%\#winhosts\hosts.txt" %URL% --no-check-certificate
 timeout /t 3
 
 if exist "%appdata%\#winhosts\hosts.txt" (
