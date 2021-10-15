@@ -59,7 +59,7 @@ if exist "%appdata%\#winhosts\hosts.txt" (
 	
 ) else (
 
-	ECHO #WinHOSTS was unable to download the latest HOSTS file from https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts
+	ECHO #WinHOSTS was unable to download the latest HOSTS file from %URL%
 	ECHO.
 	ECHO Please make sure that your computer is connected to the internet, then try running #WinHOSTS again!
 	timeout /t 10
