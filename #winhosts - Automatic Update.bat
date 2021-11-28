@@ -1,50 +1,58 @@
 ECHO OFF
+set winhostsbasedir=%~dp0
+cd /d %winhostsbasedir%
+cd /d app\#winhosts
+set winhostsappdir=%CD%
+cd %winhostsbasedir%
 
-set scriptpath=%CD%
-MD "%appdata%\#winhosts"
+cls
 
-if not exist "%appdata%\#winhosts\HOSTS" (
-	copy HOSTS "%appdata%\#winhosts"
+if not exist "%winhostsbasedir%\data\HOSTS" (
+	copy "%winhostsbasedir%\app\defaultdata\HOSTS" "%winhostsbasedir%\data\"
 )
 
 cls
-set /p URL=<HOSTS.#url
+set /p URL=<"%winhostsbasedir%\data\HOSTS.#url"
 ECHO Updating to the latest hosts file from: %URL%
-wget -O "%appdata%\#winhosts\hosts.txt" %URL% --no-check-certificate
+cd /d %winhostsappdir%
+wget -O "%winhostsbasedir%\data\hosts.txt" %URL% --no-check-certificate
+cd /d %winhostsbasedir%
 timeout /t 3
 
-if exist "%appdata%\#winhosts\hosts.txt" (
+if exist "%winhostsbasedir%\data\hosts.txt" (
 
-	if exist "%appdata%\#winhosts\HOSTS" (
+	if exist "%winhostsbasedir%\data\HOSTS" (
 	
-		fc /a "%appdata%\#winhosts\hosts.txt" "%appdata%\#winhosts\HOSTS"
+		fc /a "%winhostsbasedir%\data\hosts.txt" "%winhostsbasedir%\data\HOSTS"
 		
 	) else (
 	
-		echo .>> "%appdata%\#winhosts\HOSTS"
-		fc "%appdata%\#winhosts\hosts.txt" "%appdata%\#winhosts\HOSTS"
+		echo .>> "%winhostsbasedir%\data\HOSTS"
+		fc "%winhostsbasedir%\data\hosts.txt" "%winhostsbasedir%\data\HOSTS"
 		
 	)
 	
 	if errorlevel 1 (
 	
-		del "%appdata%\#winhosts\HOSTS"
-		cd "%appdata%\#winhosts"
+		del "%winhostsbasedir%\data\HOSTS"
+		cd /d "%winhostsbasedir%\data"
 		REM I wish I knew why ren bitches about a syntax error when renaming files not in it's own folder
 		ren hosts.txt HOSTS
-		cd "%scriptpath%"
-		echo "%cd%"
+		cd /d "%winhostsappdir%"
+		REM echo "%cd%"
 		
-		if exist "%appdata%\#winhosts\hosts.txt" (
-			del "%appdata%\#winhosts\hosts.txt"
+		if exist "%winhostsbasedir%\data\hosts.txt" (
+			del "%winhostsbasedir%\data\hosts.txt"
 		)
 		
-		elevate "#winhosts - replace.bat"
+		elevate "%winhostsappdir%\#winhosts - replace.bat"
+		
+		exit
 		
 	) else (
 		
-		if exist "%appdata%\#winhosts\hosts.txt" (
-			del "%appdata%\#winhosts\hosts.txt"
+		if exist "%winhostsbasedir%\data\hosts.txt" (
+			del "%winhostsbasedir%\data\hosts.txt"
 		)
 	
 		ECHO.
